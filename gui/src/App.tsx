@@ -1,5 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
+
+const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]; //FLASH SEQUENCE
+
+const TIMEINTERVAL = 1000; //in ms
 
 const KEYS_JSON: Record<string,string[]>  = {
   "1": ["a", "b", "c"],
@@ -13,18 +17,21 @@ const KEYS_JSON: Record<string,string[]>  = {
   "9": ["DEL"]
 };
 
+//COMPONENTS + TYPES
 interface KeyProps {
   value: string;
+  activeKey: string;
   onMouseDown: (event: React.MouseEvent<HTMLButtonElement>) => void;
   onMouseUp: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const Key = ({ value, onMouseDown, onMouseUp }: KeyProps) => {
+const Key = ({ value, activeKey, onMouseDown, onMouseUp,}: KeyProps) => {
   const keyCharacters = KEYS_JSON[value];
+  const style = value == activeKey ? {color: "WHITE"} : {};
 
   return (
     <td>
-      <button data-value={value} className="key" onMouseDown={onMouseDown} onMouseUp={onMouseUp}>
+      <button data-value={value} className={`key`} onMouseDown={onMouseDown} onMouseUp={onMouseUp} style = {style}>
         {value}
         <span>{keyCharacters.join(" ")}</span>
       </button>
@@ -33,18 +40,39 @@ const Key = ({ value, onMouseDown, onMouseUp }: KeyProps) => {
 };
 
 
+//FLASHES
+
 function App() {
   const [startTime, setStartTime] = useState<number>(0);
   const [word, setWord] = useState('');
+  const [currentButton, setCurrentButton] = useState('');
   const [previousButton, setPreviousButton] = useState('');
   const [repeat, setRepeat] = useState(0);
+  const [activeKey, setActiveKey] = useState(KEYS[0]);
 
-  const handleMouseDown = (event: React.MouseEvent<HTMLButtonElement>) => { //idk what event should be rn
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const index = KEYS.indexOf(activeKey);
+      const nextIndex = (index + 1) % KEYS.length;
+      setActiveKey(KEYS[nextIndex]);
+    }, TIMEINTERVAL);
+
+    return () => clearInterval(intervalId);
+  }, [activeKey]);
+
+
+
+  const updateTextBox = (w: string) => {
+    setWord(w);
+    (document.getElementById("textbox") as HTMLInputElement).value = w;
+  }
+
+  const handleMouseDown = (event: React.MouseEvent<HTMLButtonElement>) => { 
     const oldTime = startTime;
     setStartTime(new Date().getTime());
 
-    console.log("time gap");
-    console.log(startTime - oldTime);
+    // console.log("time gap");
+    // console.log(startTime - oldTime);
 
     if ((startTime - oldTime) > 1000) {
       setRepeat(0);
@@ -55,48 +83,11 @@ function App() {
   const handleMouseUp = (event: React.MouseEvent<HTMLButtonElement>) => {
     const buttonPressed = event.currentTarget.getAttribute("data-value") || '';
     const timer = (new Date().getTime()) - startTime;
-
-    const text = t9((document.getElementById("textbox") as HTMLInputElement).value, buttonPressed, timer);
-    (document.getElementById("textbox") as HTMLInputElement).value = text;
+    //t9((document.getElementById("textbox") as HTMLInputElement).value, buttonPressed, timer);
+    updateTextBox(word + buttonPressed);
   };
 
-  const t9 = (text: string, buttonPressed: string, time: number) => {
-    if (text === "") {
-      setWord(text);
-    }
-  
-    if (time > 200) {
-      setWord((prevWord) => prevWord.concat(buttonPressed));
-    } else {
-      if (previousButton !== buttonPressed) {
-        setRepeat(0);
-      } else {
-        setRepeat((prevRepeat) => prevRepeat + 1);
-      }
-  
-      if (repeat > 3) {
-        setRepeat(0);
-      }
-  
-      let tempText = KEYS_JSON[buttonPressed][repeat];
-  
-      if (tempText === undefined) {
-        setRepeat(0);
-        tempText = KEYS_JSON[buttonPressed][repeat];
-      }
-      if (previousButton === buttonPressed) {
-        setWord((prevWord) => prevWord.slice(0, -1));
-      } else {
-        setPreviousButton(buttonPressed);
-      }
-      setWord((prevWord) => prevWord.concat(tempText));
-    }
-  
-    text = word;
-    return text;
-  };
-  
-  
+  //WILL UPDATE FORMATTING LATER 
   return (
     <table id="grid">
       <tbody>
@@ -109,19 +100,19 @@ function App() {
         </div>
         <div id="keypad">
           <tr>
-            <Key value="1" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} />
-            <Key value="2" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} />
-            <Key value="3" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} />
+            <Key value="1" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} activeKey = {activeKey}/>
+            <Key value="2" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} activeKey = {activeKey}/>
+            <Key value="3" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} activeKey = {activeKey}/>
           </tr>
           <tr>
-            <Key value="4" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} />
-            <Key value="5" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} />
-            <Key value="6" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} />
+            <Key value="4" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} activeKey = {activeKey}/>
+            <Key value="5" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} activeKey = {activeKey}/>
+            <Key value="6" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} activeKey = {activeKey}/>
           </tr>
           <tr>
-            <Key value="7" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} />
-            <Key value="8" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} />
-            <Key value="9" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} />
+            <Key value="7" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} activeKey = {activeKey}/>
+            <Key value="8" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} activeKey = {activeKey}/>
+            <Key value="9" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} activeKey = {activeKey}/>
           </tr>
         </div>
         
@@ -131,3 +122,39 @@ function App() {
 }
 
 export default App
+
+  // BUGGY DUE TO STATE NOT UPDATING IMMEDIATELY - WILL FIX LATER - Trevor
+  // const t9 = (text: string, buttonPressed: string, time: number) => {
+  //   if (text === "" || null || '') {
+  //     console.log("RESET TEXTBAR")
+  //     updateTextBox("");
+  //     return;
+  //   }
+  
+  //   if (time > 500) { //HARD PRESS TO "SELECT" ??
+  //     setWord((prevWord) => prevWord.concat(KEYS_JSON[buttonPressed][repeat]));
+  //     console.log("WORD SET BY TIME")
+  //     console.log(KEYS_JSON[buttonPressed][repeat])
+  //     setRepeat(0);
+
+  //   } else {
+
+  //     if (previousButton !== buttonPressed) {
+  //       setRepeat(0);
+  //       setWord((w) => w + KEYS_JSON[buttonPressed][repeat]);
+  //       setPreviousButton(buttonPressed);
+  //       console.log("NEWBUTTON")
+
+  //     } else {
+  //       setRepeat((prevRepeat) => prevRepeat + 1);
+  //       //repeat iterated
+  //       if (repeat >= KEYS_JSON[buttonPressed].length - 1) {
+  //         setRepeat(0);
+  //       }
+  //       setWord((w) => w.slice(-1,1) + KEYS_JSON[buttonPressed][repeat]); 
+  //       console.log("CYCLE")
+  //     }
+  
+  //   }
+  //   updateTextBox();
+  // };
