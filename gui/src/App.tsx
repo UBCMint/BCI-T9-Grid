@@ -40,7 +40,7 @@ const Key = ({ value, activeKey, onMouseDown, onMouseUp,}: KeyProps) => {
 };
 
 
-//FLASHES
+//APP
 
 function App() {
   const [startTime, setStartTime] = useState<number>(0);
@@ -49,18 +49,33 @@ function App() {
   const [previousButton, setPreviousButton] = useState('');
   const [repeat, setRepeat] = useState(0);
   const [activeKey, setActiveKey] = useState(KEYS[0]);
+  const [isIntervalActive, setIsIntervalActive] = useState(true);
 
+  //loop flashes
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      const index = KEYS.indexOf(activeKey);
-      const nextIndex = (index + 1) % KEYS.length;
-      setActiveKey(KEYS[nextIndex]);
-    }, TIMEINTERVAL);
-
+    let intervalId: any;
+    if (isIntervalActive) {
+      intervalId = setInterval(() => {
+        const index = KEYS.indexOf(activeKey);
+        const nextIndex = (index + 1) % KEYS.length;
+        setActiveKey(KEYS[nextIndex]);
+      }, TIMEINTERVAL);
+    }
     return () => clearInterval(intervalId);
-  }, [activeKey]);
+  }, [activeKey, isIntervalActive]);
 
+  //Pause code  
+  const handleKeyPress = (event: KeyboardEvent) => {
+    if (event.code === "KeyP") {
+      toggleInterval();
+    }
+  };
 
+  document.addEventListener("keydown", handleKeyPress);
+
+  const toggleInterval = () => {
+    setIsIntervalActive((b) => !b)
+  }
 
   const updateTextBox = (w: string) => {
     setWord(w);
@@ -148,7 +163,7 @@ export default App
   //     } else {
   //       setRepeat((prevRepeat) => prevRepeat + 1);
   //       //repeat iterated
-  //       if (repeat >= KEYS_JSON[buttonPressed].length - 1) {
+  //       if (repeat >=n {
   //         setRepeat(0);
   //       }
   //       setWord((w) => w.slice(-1,1) + KEYS_JSON[buttonPressed][repeat]); 
