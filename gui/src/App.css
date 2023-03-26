@@ -1,42 +1,39 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/*DISPLAY STUFF-----------------------------------------------------*/
+#textbox {
+  width: 230px;
+  height: 25px;
+  padding: 8px 8px;
+  border-radius: 8px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+#keypad tr{
+  background-color: rgb(62, 88, 88);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/*BUTTON STUFF------------------------------------------------------*/
+#grid button{
+  background-color: rgb(44, 44, 44);
+  color: white;
+  height: 80px;
+  width: 80px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+#grid button span{
+  display: block;
+  margin-top: 5px;
+  font-size: 15px;
 }
 
-.card {
-  padding: 2em;
+#grid button:hover {
+  background-color:rgb(115, 223, 187);
+  color:azure;
 }
 
-.read-the-docs {
-  color: #888;
+/*BODY STUFF---------------------------------------------------------*/
+body {
+margin: auto;
+width: 240px; 
+padding: 225px;
+background-color: rgb(44, 43, 43);
+font-family: 'Lexend Deca', sans-serif; 
 }
