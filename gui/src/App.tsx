@@ -3,7 +3,7 @@ import './App.css'
 
 const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]; //FLASH SEQUENCE
 
-const TIMEINTERVAL = 1000; //in ms
+const TIMEINTERVAL = 3000; //in ms
 
 const KEYS_JSON: Record<string,string[]>  = {
   "1": ["a", "b", "c"],
@@ -27,7 +27,7 @@ interface KeyProps {
 
 const Key = ({ value, activeKey, onMouseDown, onMouseUp,}: KeyProps) => {
   const keyCharacters = KEYS_JSON[value];
-  const style = value == activeKey ? {color: "WHITE"} : {};
+  const style = value == activeKey ? {backgroundColor: "WHITE" } : {};
 
   return (
     <td>
