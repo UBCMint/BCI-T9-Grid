@@ -35,23 +35,28 @@ def predict(sequence, sequenceMap, depth):
     :param Dict sequenceMap: map with [number: [words...]] pairs to predict
     :param int depth: how many chars ahead should the prediction return
     :raises TypeError: if sequence is not a valid string
-    :raises AttributeError: if sequence does not exist in map
-
     
     :return list of potential words
     :rtype list<string>
     '''
-    
-    #CURRENT DEPTH 0 SOLUTION
+
     if not isinstance(sequence, str):
         raise TypeError("Invalid Input Type")
-    # output = []
-    # output += 
-    if not sequence in sequenceMap:
-        raise AttributeError("Invalid Sequence")
-        return []
     
-    return sequenceMap[sequence]
+    if not sequence in sequenceMap:
+        return []
+
+    output = sequenceMap[sequence]
+
+    if depth <= 0:
+        return output
+
+
+  
+    for i in range(1,9):
+        output += predict(sequence + str(i), sequenceMap, depth - 1)
+
+    return output
 
 
 
@@ -68,7 +73,7 @@ def main():
 
     #print(parse("jockey", inverted_keymap)) #test string
 
-    print(predict(parse("bad", invkeymap), wordmap, 0))
-    print(predict("11626", wordmap, 0))
+    print(predict(parse("aa", invkeymap), wordmap, 5))
+    #print(predict("11626", wordmap, 0))
 if __name__ == "__main__":
     main()
