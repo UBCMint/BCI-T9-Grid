@@ -1,7 +1,5 @@
 import json
 
-
-
 def parse(word, invertedMap):
     '''
     Parses an alphabetic word into a string of numbers based on a T9 Gridmap
@@ -32,12 +30,12 @@ def parse(word, invertedMap):
 
 def main():
 
-    with open('../../Keymap.json', 'r') as f:
+    with open('../Keymap.json', 'r') as f: #load keymap json as relative path
         keymap = json.load(f)
 
-    inverted_keymap = {char: k for k, v in keymap.items() for char in v}
+    inverted_keymap = {char: k for k, v in keymap.items() for char in v} #flip index and values
 
-    print(parse("Carson", inverted_keymap))
+    print(parse("Carson", inverted_keymap)) #test string
 
 if __name__ == "__main__":
     main()
