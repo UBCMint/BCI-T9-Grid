@@ -51,7 +51,6 @@ def predict(sequence, sequenceMap, depth):
     if depth <= 0:
         return output
 
-
   
     for i in range(1,9):
         output += predict(sequence + str(i), sequenceMap, depth - 1)
@@ -63,7 +62,7 @@ def predict(sequence, sequenceMap, depth):
 def main():
     with (
         open('../Keymap.json', 'r') as km,
-        open('trueMap.json', 'r') as tm
+        open('Data/trueMap.json', 'r') as tm
     ):
         keymap = json.load(km)
         wordmap = json.load(tm)
@@ -71,9 +70,9 @@ def main():
 
     invkeymap = {char: k for k, v in keymap.items() for char in v} #flip index and values
 
-    #print(parse("jockey", inverted_keymap)) #test string
+    #print(parse("boo", invkeymap)) #test string
 
-    print(predict(parse("aa", invkeymap), wordmap, 5))
-    #print(predict("11626", wordmap, 0))
+    #print(predict(parse("", invkeymap), wordmap, 5))
+    print(predict("1554", wordmap, 10))
 if __name__ == "__main__":
     main()

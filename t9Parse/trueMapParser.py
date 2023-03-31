@@ -37,7 +37,7 @@ def main():
     script_dir = os.path.dirname(__file__) # absolute dir the script is in
     with (
         open('../Keymap.json', 'r') as km,
-        open('trueMap.json', 'r') as tm
+        open('Data/trueMap.json', 'r') as tm
     ):
         keymap = json.load(km)
         truemap = json.load(tm)
