@@ -26,6 +26,10 @@ def parse(word, invertedMap):
             parsedWord += invertedMap.get(c)
     return parsedWord
 
+def predictTop(sequence, sequenceMap, depth, bottom, top):
+    
+    return sorted(predict(sequence, sequenceMap, depth), key = lambda x: int(x[1]))[bottom:top]
+
 
 def predict(sequence, sequenceMap, depth):
     '''
@@ -72,8 +76,8 @@ def main():
 
     #print(parse("boo", invkeymap)) #test string
 
-    #print(predict(parse("", invkeymap), wordmap, 5))
-    print(predict("155", wordmap, 1))
+    #print(predict("1554", wordmap, 2))
+    print(predictTop(parse("wee", invkeymap), wordmap, 1, 0, 9))
     
 if __name__ == "__main__":
     main()

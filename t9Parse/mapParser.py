@@ -14,8 +14,11 @@ def textToJsonMap(invertedMap, rel_path): #NO SAVED FREQUENCY
             if not ('#' in l or '!' in l): 
                 k = parse(l, invertedMap) #parse the line into numbers TODO: ADD EXCEPTION HANDLING
                 output.setdefault(k, []) #add array as value if key dne
-                output[k].append([l.lower().strip(), i]) #gets rid of \n
-                i += 1
+                word = l.lower().strip()
+                
+                if not any(word == w[0] for w in output[k]):    
+                    output[k].append([word, i]) #gets rid of \n
+                    i += 1
 
     return output
 
@@ -41,7 +44,7 @@ def findWorst(map):
 def main():
     script_dir = os.path.dirname(__file__) # absolute dir the script is in
     with (
-        open('../Keymap.json', 'r') as km,
+        open('Keymap.json', 'r') as km,
         #open('Data/trueMap.json', 'r') as tm
     ):
         keymap = json.load(km)
