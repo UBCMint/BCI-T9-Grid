@@ -76,13 +76,8 @@ def main():
 
     #print(parse("boo", invkeymap)) #test string
 
-<<<<<<< HEAD
     #print(predict(parse("", invkeymap), wordmap, 5))
     print(predict("1554", wordmap, 0))
-=======
-    #print(predict("1554", wordmap, 2))
-    print(predictTop(parse("wee", invkeymap), wordmap, 1, 0, 9))
->>>>>>> 9e6b3c0c4dbb17f501716718021b2289b842972f
     
 if __name__ == "__main__":
     main()
