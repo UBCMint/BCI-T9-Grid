@@ -4,6 +4,7 @@ import './App.css'
 const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]; //FLASH SEQUENCE
 
 const TIMEINTERVAL = 3000; //in ms
+const BREAKINTERVAL = 7500;
 
 const KEYS_JSON: Record<string,string[]>  = {
   "1": ["a", "b", "c"],
@@ -14,8 +15,10 @@ const KEYS_JSON: Record<string,string[]>  = {
   "6": ["p", "q", "r", "s"],
   "7": ["t", "u", "v"],
   "8": ["w", "x", "y", "z"],
-  "9": ["DEL"]
+  "9": ["DEL"] //set to delete command
 };
+
+
 
 //COMPONENTS + TYPES
 interface KeyProps {
@@ -49,6 +52,7 @@ function App() {
   const [previousButton, setPreviousButton] = useState('');
   const [repeat, setRepeat] = useState(0);
   const [activeKey, setActiveKey] = useState(KEYS[0]);
+  const [flashOn, setFlashOn] = useState();
   const [isIntervalActive, setIsIntervalActive] = useState(true);
 
   //loop flashes

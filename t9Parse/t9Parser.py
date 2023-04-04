@@ -73,7 +73,7 @@ def main():
     #print(parse("boo", invkeymap)) #test string
 
     #print(predict(parse("", invkeymap), wordmap, 5))
-    print(predict("155", wordmap, 1))
+    print(predict("1554", wordmap, 0))
     
 if __name__ == "__main__":
     main()
