@@ -1,8 +1,8 @@
 /*DISPLAY STUFF-----------------------------------------------------*/
 #textbox {
-  width: 224px;
+  width: 290px;
   height: 25px;
-  padding: 8px 8px;
+  padding: 5px;
   border-radius: 8px;
 }
 
@@ -14,8 +14,8 @@
 #grid button{
   background-color: rgb(44, 44, 44);
   color: grey;
-  height: 80px;
-  width: 80px;
+  height: 100px;
+  width: 100px;
 }
 
 #grid button span{
@@ -36,14 +36,17 @@
 
 /*BODY STUFF---------------------------------------------------------*/
 body {
-margin: auto;
-width: 240px;
-padding: 225px;
-background-color: rgb(44, 43, 43);
-font-family: 'Lexend Deca', sans-serif; 
-transform: scale(2);
+  margin: auto;
+  width: 240px;
+  padding: 20px;
+  background-color: rgb(44, 43, 43);
+  font-family: 'Lexend Deca', sans-serif; 
+  transform: scale(1.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #grid {
-
+  margin-top: 75%;
 }
