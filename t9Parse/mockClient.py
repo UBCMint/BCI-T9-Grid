@@ -16,8 +16,8 @@ def mockReq():
         "Command": "Predict",
         "Message": {
             "Sequence": "1554", 
-            "Depth": "0",
-            "Number": "3"
+            "Depth": "2",
+            "Number": "5"
         }
     }
     return json.dumps(req)
