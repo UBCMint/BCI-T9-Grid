@@ -15,7 +15,7 @@ def mockReq():
     req = {
         "Command": "Predict",
         "Message": {
-            "Sequence": "1554", 
+            "Sequence": "1134", 
             "Depth": "2",
             "Number": "5"
         }

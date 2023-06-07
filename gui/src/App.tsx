@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import SocketClient from './SocketClient';
+
 
 const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]; //FLASH SEQUENCE
 
@@ -28,6 +30,13 @@ interface KeyProps {
   onMouseUp: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
+interface ClientData { //current client stuff for signal processing syncing
+  url: string;
+  sequence: string;
+  time: number;
+  //currentHighlight: string;
+}
+
 const Key = ({ value, activeKey, onMouseDown, onMouseUp,}: KeyProps) => {
   const keyCharacters = KEYS_JSON[value];
   const style = value == activeKey ? {backgroundColor: "WHITE" } : {};
@@ -54,6 +63,12 @@ function App() {
   const [activeKey, setActiveKey] = useState(KEYS[0]);
   const [flashOn, setFlashOn] = useState();
   const [isIntervalActive, setIsIntervalActive] = useState(true);
+
+  const clientData: ClientData = {
+    url: 'http://127.0.0.1:8000/',
+    sequence: '1142',
+    time: 0,
+  };
 
   //loop flashes
   useEffect(() => {
@@ -106,6 +121,7 @@ function App() {
     updateTextBox(word + buttonPressed);
   };
 
+
   //WILL UPDATE FORMATTING LATER 
   return (
     <table id="grid">
@@ -133,12 +149,22 @@ function App() {
             <Key value="8" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} activeKey = {activeKey}/>
             <Key value="9" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} activeKey = {activeKey}/>
           </tr>
+
+          <div>
+            <SocketClient {...clientData} />
+          </div>
+
         </div>
         
       </tbody>
     </table>
+
+
+
   );
 }
+  //FIX
+
 
 export default App
 
