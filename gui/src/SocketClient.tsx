@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react'
-import WebSocket from 'ws';
+import { useState, useEffect, useCallback } from 'react'
+import useWebSocket from 'react-use-websocket';
 
-
-const localURL: string = "http://127.0.0.1:5173/";
+const localURL: string = "http://127.0.0.1:8000/";
 
 interface ClientData { //current client stuff for signal processing syncing
     url: string;
@@ -59,94 +58,46 @@ const buildRequest = (para: { sequence: string }): Request => {
   };
   
 
-class WebSocketClient {
-    private socket: WebSocket;
-    private isOpen: boolean = false;
-  
-    constructor(private url: string) {
-      this.socket = new WebSocket(this.url); //hmm maybe catch if something goes wrong with init
-    }
-  
-    //connect to client
-    public async connect() {
-      await new Promise<void>((resolve) => {
-        this.socket.on('open', () => {
-          this.isOpen = true;
-          resolve();
-        });
-      });
-    }
-  
-    //send predict request
-    public async predict(request: Request): Promise<Response> {
-      if (!this.isOpen) {
-        throw new Error('WebSocket is not open');
-      }
-  
-      this.socket.send(JSON.stringify(request)); //REQUEST IN JSON FORMAT
-  
-      //Maybe more complex promise if more status are added
-      return new Promise((resolve, reject) => {
-        this.socket.on('message', (data: WebSocket.Data) => {
-          const response = JSON.parse(data.toString()) as Response;
-  
-          if (response.status === 'Success') {
-            console.log("Success!")
-            resolve(response);
-          } else {
-            reject(response);
-          }
-        });
-      });
-    }
-  
-    public async close() {
-      if (!this.isOpen) {
-        return;
-      }
-  
-      await new Promise<void>((resolve) => {
-        this.socket.on('close', () => {
-          this.isOpen = false;
-          resolve();
-        });
-  
-        this.socket.close();
-      });
-    }
-  }
-
-
-  
+  //if there's a problem it's here zero doubt
   const SocketClient: React.FC<ClientData> = (props: ClientData) => {
-    const [response, setResponse] = useState<Response | null>(null);
-    const [activeClient, setActiveClient] = useState<WebSocketClient | null>(null);
+    const [socketUrl, setSocketUrl] = useState("ws://localhost:8000");
+    const [messageHistory, setMessageHistory] = useState(new Array<any>());
+
+
+    const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+
+    useEffect(() => {
+      if (lastMessage !== null) {
+        setMessageHistory((prev) => prev.concat(lastMessage));
+      }
+    }, [lastMessage, setMessageHistory]);
   
+
     const handleConnect = async () => {
-      const req = buildRequest(props);
-      const client = new WebSocketClient(localURL);
-      await client.connect();
-      setActiveClient(client);
-      const result = await client.predict(req);
-      setResponse(result);
+      setSocketUrl(props.url);
     };
+
+    const send = useCallback( ()=> sendMessage(JSON.stringify({"Command": "Predict", "Message": {"Sequence": "2232", "Depth": "2", "Number": "5"}}) ), []);
   
     const handleClose = () => {
-      if (activeClient) {
-        activeClient.close();
-        setActiveClient(null);
-      }
+
     };
   
     return (
       <div>
         <button onClick={handleConnect}>Connect</button>
+        <button onClick={send}>Send</button>
         <button onClick={handleClose}>Disconnect</button>
-        {response && <div>Response: {JSON.stringify(response)}</div>}
+        {lastMessage ? <span>Last message: {lastMessage.data}</span> : null}
       </div>
     );
   };
   
+
+  const parseMessage = (message:string) => {
+    let json = JSON.parse(message);
+    return json["status"];
+  }
 
 export default SocketClient;
 

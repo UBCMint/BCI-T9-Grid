@@ -65,7 +65,7 @@ function App() {
   const [isIntervalActive, setIsIntervalActive] = useState(true);
 
   const clientData: ClientData = {
-    url: 'http://127.0.0.1:8000/',
+    url: 'ws://localhost:8000',
     sequence: '1142',
     time: 0,
   };
