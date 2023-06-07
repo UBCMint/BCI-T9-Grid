@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react'
 import WebSocket from 'ws';
 
+
 const localURL: string = "http://127.0.0.1:5173/";
 
-interface ClientData {
+interface ClientData { //current client stuff for signal processing syncing
     url: string;
     sequence: string;
     time: number;
     //currentHighlight: string;
 }
 
-interface Request {
+interface Request { //actual websocket request being sent
     Command: string;
     Message?: {
         Sequence?: string;
@@ -19,12 +20,12 @@ interface Request {
     };
 }
   
-interface Response {
+interface Response { //whatever the server sends back
     status: string;
     data?: string[];
 }
 
-interface PredictionModuleData {
+interface PredictionModuleData { //??
     word: string;
     frequency?: number;
 }
@@ -35,25 +36,6 @@ const PredictionModule: React.FC<PredictionModuleData> = (props: PredictionModul
     )
 }
 
-const SocketClient: React.FC<ClientData> = (props: ClientData) => {
-
-    const ActiveClient = new WebSocketClient(localURL); //placeholder
-    
-    const req = buildRequest(props)
-
-    try{
-        ActiveClient.connect()
-        ActiveClient.predict(req)
-    }
-
-    return(
-        <div>
-            <PredictionModule word = {"test"}/>
-        </div>
-    )
-
-}
-
 interface Request {
     Command: string;
     message?: {
@@ -61,7 +43,7 @@ interface Request {
       depth?: string;
       number?: string;
     };
-  }
+  };
       
 
 const buildRequest = (para: { sequence: string }): Request => {
@@ -76,9 +58,6 @@ const buildRequest = (para: { sequence: string }): Request => {
     return req;
   };
   
-
-
-
 
 class WebSocketClient {
     private socket: WebSocket;
@@ -98,7 +77,7 @@ class WebSocketClient {
       });
     }
   
-    //send predict reqest
+    //send predict request
     public async predict(request: Request): Promise<Response> {
       if (!this.isOpen) {
         throw new Error('WebSocket is not open');
@@ -136,3 +115,38 @@ class WebSocketClient {
       });
     }
   }
+
+
+  
+  const SocketClient: React.FC<ClientData> = (props: ClientData) => {
+    const [response, setResponse] = useState<Response | null>(null);
+    const [activeClient, setActiveClient] = useState<WebSocketClient | null>(null);
+  
+    const handleConnect = async () => {
+      const req = buildRequest(props);
+      const client = new WebSocketClient(localURL);
+      await client.connect();
+      setActiveClient(client);
+      const result = await client.predict(req);
+      setResponse(result);
+    };
+  
+    const handleClose = () => {
+      if (activeClient) {
+        activeClient.close();
+        setActiveClient(null);
+      }
+    };
+  
+    return (
+      <div>
+        <button onClick={handleConnect}>Connect</button>
+        <button onClick={handleClose}>Disconnect</button>
+        {response && <div>Response: {JSON.stringify(response)}</div>}
+      </div>
+    );
+  };
+  
+
+export default SocketClient;
+
